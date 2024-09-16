@@ -16,8 +16,6 @@ This only runs out of the `environment` subdirectory in which you built the cont
 
 docker run -i -t --mount type=bind,source=./../ebook,target=/home/jupyteruser/ebook -p8888:8888 pp.ebook
 
-C:\Users\akavu\Desktop\pcds.2024\environment
-
 docker run -i -t --mount type=bind,source=C:\Users\akavu\Desktop\pcds.2024\environment/../ebook,target=/home/jupyteruser/ebook -p8888:8888 pp.ebook
 
 ## Run jupyter in container
