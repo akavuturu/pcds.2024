@@ -6,34 +6,50 @@
 
 
 //
-// row_column.c -- subset of running example in stencil.s
+// row_column.c -- demonstration of importance of iteration order on memory performance.
 //
 
 /*
- *  stencil.c
- *
- *  This program has sucessively optimized implementations of stencil computations.
- *  It has functions to 
- *     * randomly intialize 2-d array with doubles in [0,1]
- *     * Average a stencil of 2*HWIDTH+1 for each cell
- *     * Sum two averaged stencils
- *
- *  This computing pattern is common in numerical simulations and similar
- *  to the computation of convulation functions in ML.
- *
  *  Compile with:
  *      gcc -Xpreprocessor -fopenmp -O3 -lomp stencil.c (clang MacOSX)
  *      gcc -fopenmp -O3 stencil.c (gcc)
  */
 
+
 // Dimension of the array.  Data will be DIM x DIM
 //const int DIM = 16384;
-//const int DIM = 8192;
-const int DIM = 4096;
+const int DIM = 8192;
+//const int DIM = 4096;
 // Number of trials.  Set to get desired confidence intervals.
 const int TRIALS = 4;
 // HWIDTH = 2 matches the unrolled code.  If you change, comparisons will break.
 const int HWIDTH = 2;
+
+
+/* Randomly Initialize in column major order. 
+  Strided access should be less efficient. */
+void initializeyx ( double* array )
+{
+    /* Initialize the array to random values */
+    for (int y=0; y<DIM; y++) {
+        for (int x=0; x<DIM; x++) {
+            array[x*DIM+y] = (double)rand()/RAND_MAX;
+        }        
+    }
+}
+
+/* Randomly Initialize in row major order. 
+  Sequential access should be more efficient. */
+void initializexy ( double* array )
+{
+    /* Initialize the array to random values */
+    for (int x=0; x<DIM; x++) {
+        for (int y=0; y<DIM; y++) {
+            array[x*DIM+y] = (double)rand()/RAND_MAX;
+        }        
+    }
+}
+
 
 /* Helper function to deal with gettimeofday()
 
@@ -61,30 +77,6 @@ int timeval_subtract (struct timeval * result, struct timeval * y, struct timeva
 
   /* Return 1 if result is negative. */
   return x->tv_sec < y->tv_sec;
-}
-
-/* Randomly Initialize in column major order. 
-  Strided access should be less efficient. */
-void initializeyx ( double* array )
-{
-    /* Initialize the array to random values */
-    for (int y=0; y<DIM; y++) {
-        for (int x=0; x<DIM; x++) {
-            array[x*DIM+y] = (double)rand()/RAND_MAX;
-        }        
-    }
-}
-
-/* Randomly Initialize in row major order. 
-  Sequential access should be more efficient. */
-void initializexy ( double* array )
-{
-    /* Initialize the array to random values */
-    for (int x=0; x<DIM; x++) {
-        for (int y=0; y<DIM; y++) {
-            array[x*DIM+y] = (double)rand()/RAND_MAX;
-        }        
-    }
 }
 
 
