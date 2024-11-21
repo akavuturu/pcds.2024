@@ -77,7 +77,7 @@ RUN conda install -c conda-forge openjdk && \
 # Would prefer to install with conda, but doesn't work now
 RUN pip install pyspark ray
 
-#RUN conda install torchvision   
+RUN conda install torchvision   
 #RUN conda install pandoc   
 
 #RUN conda install jax -c conda-forge

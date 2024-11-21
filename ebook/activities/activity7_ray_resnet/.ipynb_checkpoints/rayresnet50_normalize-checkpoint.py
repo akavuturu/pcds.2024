@@ -33,8 +33,8 @@ class RRN50Normalize:
             Exception: If there is an image format error.
         """
         # open image and convert to tensor
-        image = Image.open(file_path)
-        imgtensor = pil_to_tensor(image)
+        imgtensor = Image.open(file_path).convert("RGB")
+        # imgtensor = pil_to_tensor(image)
 
         try:
             return self.preprocess(imgtensor).unsqueeze(dim=0)

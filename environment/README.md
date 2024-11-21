@@ -14,7 +14,7 @@ docker build . -t pp.ebook
 
 This only runs out of the `environment` subdirectory in which you built the container.
 
-docker run -i -t --mount type=bind,source=./../ebook,target=/home/jupyteruser/ebook -p8888:8888 pp.ebook
+docker run --shm-size=1.72gb -i -t --mount type=bind,source=./../ebook,target=/home/jupyteruser/ebook -p8888:8888 pp.ebook
 
 docker run -i -t --mount type=bind,source=C:\Users\akavu\Desktop\pcds.2024\environment/../ebook,target=/home/jupyteruser/ebook -p8888:8888 pp.ebook
 
