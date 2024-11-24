@@ -79,7 +79,6 @@ RUN pip install pyspark ray
 
 RUN conda install torchvision   
 #RUN conda install pandoc   
-
 #RUN conda install jax -c conda-forge
 
 # RUN wget https://dlcdn.apache.org/hadoop/common/hadoop-3.2.4/hadoop-3.2.4.tar.gz && \
@@ -90,6 +89,7 @@ ENV JAVA_HOME=/opt/conda
 #RUN apt-get -y install graphviz
 #RUN conda install python-graphviz
 
+RUN pip install -U ipywidgets
 RUN pip install -U ipywidgets
 
 #RUN apt-get update && apt-get install -y \
