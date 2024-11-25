@@ -1,0 +1,75 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumerate}
+\usepackage{mathtools}
+\usepackage{pgfplots}
+\usepackage{pgf, tikz}
+\usepackage{float}
+\usepackage{rotating}
+\pgfplotsset{compat=1.17}
+\usepackage{listings}
+\usepackage{pdfpages}
+\usepackage{enumitem}
+\setlist[enumerate,1]{label={\large\textbf{\arabic*}}, labelsep=1.5em, wide=0pt}
+\setlist[enumerate,2]{leftmargin=1.5cm}
+
+\lstset{
+frame=tb,
+  aboveskip=3mm,
+  belowskip=3mm,
+  basicstyle=\normalsize\ttfamily
+}
+\usetikzlibrary{arrows, automata} 
+
+\newcommand{\staritem}{\global\asterisktrue\item}
+\newcommand{\perhapsasterisk}{%
+  \ifasterisk*\global\asteriskfalse\fi
+}
+\newif\ifasterisk
+
+\setlength{\oddsidemargin}{0in}
+\setlength{\textwidth}{6in}
+\setlength{\topmargin}{0in}
+\setlength{\textheight}{8in}
+
+\def\bigo{\mathcal O}
+\def\llim#1{\underset{#1}{\text{lim}}}
+\def\super{\textsuperscript}
+
+\begin{document}
+\pagestyle{empty}
+
+\begin{center}
+  \begin{Large}
+    601.420/620 Parallel Computing for Data Science\\
+    Homework 6: Ray ResNet
+  \end{Large}
+\end{center}
+\begin{center} Aravind Kavuturu \end{center}
+\begin{center} November 24th, 2024 \end{center}
+\vspace{10pt}
+
+\begin{enumerate}
+    \item Does the computation for a single input file (normalization and classification) run in serial or parallel? If serially, how is the dependency enforced?
+    
+    The computation runs in series, as the output of the normalization step is required for the classification step. Ray enforces this when we send the norm\_oid into the remote call of the classification step, which tells Ray that we need to schedule the classification step after the normalization step is completed.
+
+    \item Does the computation of different files run in serial or parallel? If parallel, explain why they are independent.
+    
+    The computation for different files is run in parallel. With different Ray actors, we can handle the computation for different files independently, as each actor will work on their own file. Since the normalization of file A does not depend on the normalization or classification of file B, we can do these files in parallel using different actors.
+
+    \item This version has about the same runtime as the version in Activity 22 that does normalization and classification in one actor.
+    \begin{enumerate}
+        \item In what configuration would it be fast to do them together?
+        
+        If you have a small dataset where the parallelism might not be as pronounced, then the overhead of using many actors would outweigh the speedup you gain. Additionally, if the tasks we are performing (normalization and classification) are not computationally expensive, then using only one actor could be better than splitting the work up and potentially leading to delays in the overall computation. In terms of target hardware, we would want to use only one actor when we have limited CPU/GPU resources, as we won't be able to take advantage of the multiple actors.
+
+        \item In what configuration would it be faster to do them separately?
+        
+        Conversely, if we have a large dataset, we will see a significant speedup with using many actors, since the parallelism will be greater when working on multiple actors at once. Additionally, if the normalization/classification tasks are very expensive computationally, then we will want to split up the work among many actors to ensure that as much of the work is parallelized as possible. In terms of target hardware, we would want to use multiple actors when we have extensive compute resources, such as distributed/cloud compute, efficient GPUs, or even simply multi-core CPUs. Any improvement to the hardware can be directly translated to a speedup in the program if we match the number of actors to our available resources.
+    \end{enumerate}
+\end{enumerate}
+
+\end{document}
